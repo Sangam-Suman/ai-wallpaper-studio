@@ -1,0 +1,7 @@
+<resources>
+    <style name="Theme.Project_001" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <item name="android:statusBarColor">#08001A</item>
+        <item name="android:navigationBarColor">#08001A</item>
+        <item name="android:windowBackground">#08001A</item>
+    </style>
+</resources>

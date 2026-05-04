@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\sanga\\\\AndroidStudioProjects\\\\project_001\\\\app\\\\src\\\\main\\\\java\\\\com\\\\example\\\\aiwallpaper\" -Recurse -File)",
+      "Bash(Select-Object FullName)",
+      "WebSearch",
+      "PowerShell(git add *)",
+      "PowerShell(winget install *)",
+      "PowerShell(gh auth *)",
+      "PowerShell(gh repo *)"
+    ]
+  }
+}
