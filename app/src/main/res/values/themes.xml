@@ -1,0 +1,10 @@
+<resources>
+    <!-- Compose handles all theming; this XML theme is only used for the launch window
+         before Compose takes over. We inherit from a no-action-bar Material theme
+         so there's no default toolbar flashing on startup. -->
+    <style name="Theme.Project_001" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <item name="android:statusBarColor">#08001A</item>
+        <item name="android:navigationBarColor">#08001A</item>
+        <item name="android:windowBackground">#08001A</item>
+    </style>
+</resources>
