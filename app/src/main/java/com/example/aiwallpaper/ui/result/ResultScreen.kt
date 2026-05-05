@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Crop
 import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Wallpaper
@@ -142,7 +143,7 @@ fun ResultScreen(
 
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(10.dp)
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         // Download
                         OutlinedButton(
@@ -166,6 +167,21 @@ fun ResultScreen(
                             Icon(Icons.Default.Wallpaper, null, modifier = Modifier.size(18.dp))
                             Spacer(Modifier.width(6.dp))
                             Text("Set", fontWeight = FontWeight.Bold)
+                        }
+
+                        // Crop & Set
+                        OutlinedButton(
+                            onClick = {
+                                val intent = vm.getCropAndSetIntent(context)
+                                if (intent != null) context.startActivity(intent)
+                            },
+                            modifier = Modifier.weight(1f).height(50.dp),
+                            shape = RoundedCornerShape(12.dp),
+                            colors = ButtonDefaults.outlinedButtonColors(contentColor = NeonPurple)
+                        ) {
+                            Icon(Icons.Default.Crop, null, modifier = Modifier.size(18.dp))
+                            Spacer(Modifier.width(6.dp))
+                            Text("Crop", fontWeight = FontWeight.SemiBold)
                         }
 
                         // Regenerate

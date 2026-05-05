@@ -4,11 +4,14 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AutoAwesome
+import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
@@ -25,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.aiwallpaper.data.model.ImageProvider
+import com.example.aiwallpaper.data.model.PROMPT_TEMPLATES
 import com.example.aiwallpaper.data.model.WallpaperStyle
 import com.example.aiwallpaper.storage.AppContainer
 import com.example.aiwallpaper.ui.theme.*
@@ -32,7 +36,8 @@ import com.example.aiwallpaper.ui.theme.*
 @Composable
 fun GeneratorScreen(
     onNavigateToResult: (Long) -> Unit,
-    onNavigateToHistory: () -> Unit
+    onNavigateToHistory: () -> Unit,
+    onNavigateToSchedule: () -> Unit = {}
 ) {
     val repo = remember { AppContainer.wallpaperRepository() }
     val vm: GeneratorViewModel = viewModel(factory = GeneratorViewModel.Factory(repo))
@@ -132,6 +137,9 @@ fun GeneratorScreen(
                     Text("Studio", color = NeonPurple, fontWeight = FontWeight.Bold, fontSize = 20.sp)
                 }
                 Row {
+                    IconButton(onClick = onNavigateToSchedule) {
+                        Icon(Icons.Default.CalendarMonth, "Auto Schedule", tint = OnSurface)
+                    }
                     IconButton(onClick = { showKeyDialog = true }) {
                         Icon(Icons.Default.Settings, "Change API Key", tint = OnSurface)
                     }
@@ -145,6 +153,29 @@ fun GeneratorScreen(
 
             // Prompt input
             Text("Describe your wallpaper", color = OnSurface, style = MaterialTheme.typography.bodyMedium)
+            Spacer(Modifier.height(8.dp))
+
+            LazyRow(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                contentPadding = PaddingValues(horizontal = 0.dp)
+            ) {
+                items(PROMPT_TEMPLATES) { template ->
+                    Box(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(20.dp))
+                            .background(CardBackground)
+                            .border(1.dp, NeonPurple.copy(alpha = 0.3f), RoundedCornerShape(20.dp))
+                            .clickable { vm.onPromptChanged(template.prompt) }
+                            .padding(horizontal = 10.dp, vertical = 6.dp)
+                    ) {
+                        Text(
+                            "${template.emoji} ${template.label}",
+                            color = OnSurface,
+                            style = MaterialTheme.typography.labelSmall
+                        )
+                    }
+                }
+            }
             Spacer(Modifier.height(8.dp))
 
             OutlinedTextField(

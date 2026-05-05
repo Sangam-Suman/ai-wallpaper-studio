@@ -71,6 +71,9 @@ dependencies {
     // Coil for image loading from file
     implementation(libs.coil.compose)
 
+    // WorkManager for background scheduling
+    implementation(libs.androidx.work.runtime)
+
     // Tests
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

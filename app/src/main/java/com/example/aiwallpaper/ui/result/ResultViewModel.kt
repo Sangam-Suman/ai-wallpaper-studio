@@ -1,6 +1,8 @@
 package com.example.aiwallpaper.ui.result
 
 import android.content.Context
+import android.content.Intent
+import androidx.core.content.FileProvider
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -50,6 +52,14 @@ class ResultViewModel(private val repo: WallpaperRepository) : ViewModel() {
 
     fun clearToast() {
         _state.update { it.copy(toast = null) }
+    }
+
+    fun getCropAndSetIntent(context: Context): Intent? {
+        val path = _state.value.history?.imagePath ?: return null
+        return runCatching {
+            val uri = FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", java.io.File(path))
+            android.app.WallpaperManager.getInstance(context).getCropAndSetWallpaperIntent(uri)
+        }.getOrNull()
     }
 
     class Factory(private val repo: WallpaperRepository) : ViewModelProvider.Factory {

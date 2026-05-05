@@ -21,4 +21,7 @@ interface HistoryDao {
 
     @Query("DELETE FROM wallpaper_history")
     suspend fun deleteAll()
+
+    @Query("SELECT * FROM wallpaper_history ORDER BY createdAt DESC")
+    suspend fun getAllHistoryList(): List<WallpaperHistory>
 }

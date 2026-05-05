@@ -10,12 +10,14 @@ import com.example.aiwallpaper.ui.generator.GeneratorScreen
 import com.example.aiwallpaper.ui.history.HistoryScreen
 import com.example.aiwallpaper.ui.onboarding.OnboardingScreen
 import com.example.aiwallpaper.ui.result.ResultScreen
+import com.example.aiwallpaper.ui.schedule.ScheduleScreen
 
 private object Routes {
     const val ONBOARDING = "onboarding"
     const val GENERATOR = "generator"
     const val RESULT = "result/{historyId}"
     const val HISTORY = "history"
+    const val SCHEDULE = "schedule"
 
     fun result(historyId: Long) = "result/$historyId"
 }
@@ -45,6 +47,9 @@ fun AppNavigation() {
                 },
                 onNavigateToHistory = {
                     navController.navigate(Routes.HISTORY)
+                },
+                onNavigateToSchedule = {
+                    navController.navigate(Routes.SCHEDULE)
                 }
             )
         }
@@ -65,6 +70,10 @@ fun AppNavigation() {
                 },
                 onBack = { navController.popBackStack() }
             )
+        }
+
+        composable(Routes.SCHEDULE) {
+            ScheduleScreen(onBack = { navController.popBackStack() })
         }
     }
 }

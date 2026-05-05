@@ -21,4 +21,6 @@ object AppContainer {
     fun apiKeyRepository() = _apiKeyRepo
 
     fun wallpaperRepository() = _wallpaperRepo
+
+    fun encryptedPrefs(): EncryptedPreferences = encryptedPrefs
 }

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/widget_background"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="12dp">
+
+    <ImageView
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:src="@mipmap/ic_launcher"
+        android:scaleType="fitCenter" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="AI Wallpaper"
+        android:textColor="#CCCCCC"
+        android:textSize="11sp"
+        android:layout_marginTop="4dp" />
+
+    <Button
+        android:id="@+id/widget_btn_generate"
+        android:layout_width="match_parent"
+        android:layout_height="36dp"
+        android:layout_marginTop="8dp"
+        android:text="Generate"
+        android:textSize="12sp"
+        android:textColor="#FFFFFF"
+        android:backgroundTint="#B847FF"
+        style="@style/Widget.MaterialComponents.Button" />
+
+</LinearLayout>
