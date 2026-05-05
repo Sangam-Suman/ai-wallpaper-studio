@@ -109,7 +109,7 @@ class WallpaperRepository(
         val encoded = URLEncoder.encode(fullPrompt, "UTF-8")
         val seed = Random.nextInt(1, 999_999)
         val url = "https://image.pollinations.ai/prompt/$encoded" +
-                "?width=1080&height=1920&nologo=true&seed=$seed&model=flux"
+                "?width=1080&height=1920&nologo=true&enhance=true&seed=$seed&model=flux"
 
         return withContext(Dispatchers.IO) {
             try {
