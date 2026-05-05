@@ -24,6 +24,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.aiwallpaper.data.model.ImageProvider
 import com.example.aiwallpaper.data.model.WallpaperStyle
 import com.example.aiwallpaper.storage.AppContainer
 import com.example.aiwallpaper.ui.theme.*
@@ -188,7 +189,28 @@ fun GeneratorScreen(
                 onSelect = { vm.onStyleSelected(it) }
             )
 
-            Spacer(Modifier.height(32.dp))
+            Spacer(Modifier.height(24.dp))
+
+            // Provider selector
+            Text("Image source", color = OnSurface, style = MaterialTheme.typography.bodyMedium)
+            Spacer(Modifier.height(10.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                ImageProvider.entries.forEach { provider ->
+                    ProviderChip(
+                        provider = provider,
+                        isSelected = provider == state.provider,
+                        enabled = !state.isGenerating,
+                        onClick = { vm.onProviderSelected(provider) },
+                        modifier = Modifier.weight(1f)
+                    )
+                }
+            }
+
+            Spacer(Modifier.height(28.dp))
 
             // Generate button
             Button(
@@ -230,6 +252,46 @@ fun GeneratorScreen(
             }
 
             Spacer(Modifier.height(32.dp))
+        }
+    }
+}
+
+@Composable
+private fun ProviderChip(
+    provider: ImageProvider,
+    isSelected: Boolean,
+    enabled: Boolean,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Box(
+        modifier = modifier
+            .clip(RoundedCornerShape(12.dp))
+            .background(
+                if (isSelected) NeonPurple.copy(alpha = 0.2f) else CardBackground
+            )
+            .border(
+                width = if (isSelected) 1.5.dp else 1.dp,
+                color = if (isSelected) NeonPurple else NeonPurple.copy(alpha = 0.2f),
+                shape = RoundedCornerShape(12.dp)
+            )
+            .clickable(enabled = enabled, onClick = onClick)
+            .padding(vertical = 12.dp, horizontal = 8.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Text(
+                provider.label,
+                color = if (isSelected) NeonPurple else OnSurface,
+                style = MaterialTheme.typography.labelMedium,
+                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
+            )
+            Spacer(Modifier.height(2.dp))
+            Text(
+                provider.subtitle,
+                color = OnSurfaceMuted,
+                style = MaterialTheme.typography.labelSmall
+            )
         }
     }
 }

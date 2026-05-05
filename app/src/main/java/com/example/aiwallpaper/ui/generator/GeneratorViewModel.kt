@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.example.aiwallpaper.data.model.ImageProvider
 import com.example.aiwallpaper.data.model.WallpaperStyle
 import com.example.aiwallpaper.data.repository.WallpaperRepository
 import com.example.aiwallpaper.utils.ImageUtils
@@ -15,14 +16,15 @@ import kotlinx.coroutines.launch
 data class GeneratorUiState(
     val prompt: String = "",
     val selectedStyle: WallpaperStyle = WallpaperStyle.AMOLED,
+    val provider: ImageProvider = ImageProvider.GEMINI,
     val isGenerating: Boolean = false,
     val error: String? = null,
-    val navigateToHistoryId: Long? = null   // set when generation succeeds
+    val navigateToHistoryId: Long? = null
 )
 
 class GeneratorViewModel(private val repo: WallpaperRepository) : ViewModel() {
 
-    private val _state = MutableStateFlow(GeneratorUiState())
+    private val _state = MutableStateFlow(GeneratorUiState(provider = repo.getProvider()))
     val state: StateFlow<GeneratorUiState> = _state
 
     fun onPromptChanged(text: String) {
@@ -31,6 +33,11 @@ class GeneratorViewModel(private val repo: WallpaperRepository) : ViewModel() {
 
     fun onStyleSelected(style: WallpaperStyle) {
         _state.update { it.copy(selectedStyle = style) }
+    }
+
+    fun onProviderSelected(provider: ImageProvider) {
+        _state.update { it.copy(provider = provider, error = null) }
+        repo.saveProvider(provider)
     }
 
     fun generate(context: Context) {
@@ -43,8 +50,21 @@ class GeneratorViewModel(private val repo: WallpaperRepository) : ViewModel() {
         _state.update { it.copy(isGenerating = true, error = null) }
 
         viewModelScope.launch {
-            val result = repo.generateWallpaper(current.prompt, current.selectedStyle)
-            result.fold(
+            val result = repo.generateWallpaper(current.prompt, current.selectedStyle, current.provider)
+
+            // Auto-fallback: Gemini quota exhausted → silently switch to free FLUX and retry
+            val finalResult = if (result.isFailure
+                && current.provider == ImageProvider.GEMINI
+                && result.exceptionOrNull()?.message == WallpaperRepository.QUOTA_EXHAUSTED_MARKER
+            ) {
+                _state.update { it.copy(provider = ImageProvider.POLLINATIONS) }
+                repo.saveProvider(ImageProvider.POLLINATIONS)
+                repo.generateWallpaper(current.prompt, current.selectedStyle, ImageProvider.POLLINATIONS)
+            } else {
+                result
+            }
+
+            finalResult.fold(
                 onSuccess = { base64 ->
                     val fileName = "wallpaper_${System.currentTimeMillis()}"
                     val path = ImageUtils.saveImageToInternalStorage(context, base64, fileName)
@@ -56,7 +76,12 @@ class GeneratorViewModel(private val repo: WallpaperRepository) : ViewModel() {
                     }
                 },
                 onFailure = { e ->
-                    _state.update { it.copy(isGenerating = false, error = e.message) }
+                    val message = if (e.message == WallpaperRepository.QUOTA_EXHAUSTED_MARKER) {
+                        "Free API quota used up for today. It resets at midnight Pacific Time."
+                    } else {
+                        e.message
+                    }
+                    _state.update { it.copy(isGenerating = false, error = message) }
                 }
             )
         }

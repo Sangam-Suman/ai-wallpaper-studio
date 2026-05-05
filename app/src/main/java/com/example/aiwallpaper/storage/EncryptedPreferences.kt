@@ -3,6 +3,7 @@ package com.example.aiwallpaper.storage
 import android.content.Context
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
+import com.example.aiwallpaper.data.model.ImageProvider
 
 class EncryptedPreferences(context: Context) {
 
@@ -26,7 +27,15 @@ class EncryptedPreferences(context: Context) {
 
     fun hasApiKey(): Boolean = !getApiKey().isNullOrBlank()
 
+    fun saveProvider(provider: ImageProvider) =
+        prefs.edit().putString(KEY_PROVIDER, provider.name).apply()
+
+    fun getProvider(): ImageProvider =
+        ImageProvider.entries.find { it.name == prefs.getString(KEY_PROVIDER, null) }
+            ?: ImageProvider.GEMINI
+
     companion object {
         private const val KEY_API = "gemini_api_key"
+        private const val KEY_PROVIDER = "image_provider"
     }
 }
