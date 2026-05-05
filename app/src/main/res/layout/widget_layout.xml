@@ -29,7 +29,6 @@
         android:text="Generate"
         android:textSize="12sp"
         android:textColor="#FFFFFF"
-        android:backgroundTint="#B847FF"
-        style="@style/Widget.MaterialComponents.Button" />
+        android:background="#B847FF" />
 
 </LinearLayout>
